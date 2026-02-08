@@ -1901,6 +1901,9 @@
   .object-scale-down {
     object-fit: scale-down;
   }
+  .object-center {
+    object-position: center;
+  }
   .object-left {
     object-position: left;
   }
