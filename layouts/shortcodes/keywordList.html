@@ -1,0 +1,8 @@
+{{- $markdownify := (.Get "markdownify" | default "false") -}}
+<div class="flex flex-row flex-wrap items-center space-x-2">
+    {{- if eq $markdownify "true" -}}
+        {{- .Inner | markdownify | emojify -}}
+    {{- else -}}
+        {{- .Inner -}}
+    {{- end -}}
+</div>

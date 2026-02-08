@@ -33,3 +33,11 @@ Usage:
 {{< commentout >}}
 This content will be a comment in the resultant HTML file, and does not render.
 {{< /commentout >}}
+```
+
+### `status_badge`
+
+```markdown
+{{< status_badge href="https://url.to/link" label="label" value="value" color="123456" icon="github" >}}
+```
+
