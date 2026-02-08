@@ -1,0 +1,9 @@
+defaultContentLanguage = "en"
+
+[pagination]
+pagerSize = 6
+
+[module]
+  [[module.imports]]
+    disable = false
+    path = "github.com/nunocoracao/blowfish/v2"
