@@ -55,7 +55,7 @@
             </span>
           {{ end }}
           <span class="text-xs font-light" title="{{ .Title }}">
-            {{ .Name | markdownify }}
+            {{ .Name | markdownify | emojify }}
           </span>
         </a>
       {{ end }}
