@@ -4,6 +4,14 @@ gogoleAnalytics = "G-WQTS56KXPJ"
 [pagination]
 pagerSize = 6
 
+[outputs]
+home = ['html', 'json', 'markdown', 'rss']
+page = ['html', 'json', 'markdown']
+rss = ['rss']
+section = ['html', 'json', 'markdown', 'rss']
+taxonomy = ['html', 'json', 'markdown', 'rss']
+term = ['html', 'json', 'markdown', 'rss']
+
 [module]
   [[module.imports]]
     disable = false
