@@ -1,0 +1,58 @@
+{{- /*
+  Renders the links of a paper entry as badges, in the same style as the
+  `link` and `status_badge` shortcodes.
+
+  The `paper` and `poster` links of the API are served by the momonga backend,
+  hence they are rendered only when `params.api.momonga` is given.
+
+  @param {maps.Params} context the paper entry.
+*/ -}}
+
+{{- $momonga := site.Params.api.momonga -}}
+{{- $links := .links | default slice -}}
+{{- $badges := slice -}}
+
+{{- if and $momonga (in $links "paper") -}}
+    {{- $badges = $badges | append (dict
+        "label" "Paper"
+        "value" "PDF"
+        "href" (printf "%s/api/downloads/papers/%s?ext=pdf" (strings.TrimSuffix "/" $momonga) .id)) -}}
+{{- end -}}
+{{- if and $momonga (in $links "poster") -}}
+    {{- $badges = $badges | append (dict
+        "label" "Poster"
+        "value" "PDF"
+        "href" (printf "%s/api/downloads/posters/%s?ext=pdf" (strings.TrimSuffix "/" $momonga) .id)) -}}
+{{- end -}}
+{{- with .doi -}}
+    {{- $doi := strings.TrimPrefix "https://doi.org/" . -}}
+    {{- $badges = $badges | append (dict
+        "label" "DOI"
+        "value" $doi
+        "href" (printf "https://doi.org/%s" $doi)) -}}
+{{- end -}}
+{{- with .arxiv -}}
+    {{- $badges = $badges | append (dict
+        "label" "arXiv"
+        "value" .
+        "href" (printf "https://arxiv.org/abs/%s" .)) -}}
+{{- end -}}
+{{- with .href -}}
+    {{- $badges = $badges | append (dict
+        "label" "Link"
+        "value" (urls.Parse .).Host
+        "href" .) -}}
+{{- end -}}
+
+{{- with $badges }}
+<span class="paper-badges inline-flex flex-wrap items-center gap-1 ml-1 align-middle">
+    {{- range . }}
+    <a href="{{ .href }}">
+        <span class="inline-flex items-center text-[11px] font-bold leading-none tracking-tight">
+            <span class="flex items-center h-5 bg-gray-400 text-white px-2 rounded-l-[3px]">{{ .label }}</span>
+            <span class="flex items-center h-5 bg-green-500 text-white px-2 rounded-r-[3px]">{{ .value }}</span>
+        </span>
+    </a>
+    {{- end }}
+</span>
+{{- end -}}

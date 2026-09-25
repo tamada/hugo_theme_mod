@@ -1,0 +1,52 @@
+{{- /*
+  Renders the paper(s) of the given id(s), obtained from the papers API.
+
+  Usage:
+      {{< paper "2026wsse_fedorov" >}}
+      {{< paper id="2026wsse_fedorov" >}}
+      {{< paper id="2026wsse_fedorov,2026tse_fedorov" >}}
+      {{< paper id="2026wsse_fedorov" badges="false" >}}
+      {{< paper id="2026wsse_fedorov" field="title" >}}
+
+  @param {string} id     the id(s) of the paper(s), separated by commas.
+  @param {string} field  print the raw value of the given key instead of the
+                         citation (e.g. `title`, `year`, `authors`).
+  @param {bool}   badges render the links of the paper (default true).
+*/ -}}
+
+{{- $ids := or (.Get "id") (.Get 0) -}}
+{{- if not $ids -}}
+    {{- errorf "shortcode paper: no id is given: %s" .Position -}}
+{{- end -}}
+
+{{- $papers := partialCached "papers/data.html" . -}}
+{{- $field := .Get "field" -}}
+{{- $badges := ne (.Get "badges") "false" -}}
+{{- $found := slice -}}
+{{- range $id := split $ids "," -}}
+    {{- $id = trim $id " " -}}
+    {{- with index $papers $id -}}
+        {{- $found = $found | append . -}}
+    {{- else -}}
+        {{- warnf "shortcode paper: no paper found for id %q: %s" $id $.Position -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if $field -}}
+    {{- range $i, $paper := $found -}}
+        {{- if $i }}, {{ end -}}
+        {{- with index $paper $field -}}
+            {{- if reflect.IsSlice . }}{{ delimit . ", " }}{{ else }}{{ . }}{{ end -}}
+        {{- else -}}
+            {{- warnf "shortcode paper: %q has no %q key: %s" $paper.id $field $.Position -}}
+        {{- end -}}
+    {{- end -}}
+{{- else if eq (len $found) 1 -}}
+    {{- partial "papers/render.html" (dict "paper" (index $found 0) "badges" $badges) -}}
+{{- else if $found -}}
+    <ul class="paper-list">
+        {{- range $found }}
+        <li>{{ partial "papers/render.html" (dict "paper" . "badges" $badges) }}</li>
+        {{- end }}
+    </ul>
+{{- end -}}

@@ -1,0 +1,29 @@
+{{- /*
+  Renders a single entry of the papers API as a citation, in the same format as
+  the publication list of https://tamadalab.github.io/publications:
+
+      authors, "title", source, pp. pages, month year note.
+
+  `source`, `pages` and `note` may contain markdown links, hence they are
+  markdownified.
+
+  @param {maps.Params} paper  the paper entry.
+  @param {bool}        badges render the links of the paper (default true).
+*/ -}}
+
+{{- $paper := .paper -}}
+{{- $badges := .badges | default true -}}
+
+<span class="paper" id="paper-{{ $paper.id }}">
+    <span class="paper-content">
+        {{- with $paper.authors }}{{ delimit . ", " }}, {{ end -}}
+        &ldquo;{{ $paper.title }}&rdquo;
+        {{- with $paper.source }}, {{ . | markdownify }}{{ end -}}
+        {{- with $paper.pages }}, pp. {{ . | markdownify }}{{ end -}}
+        {{- with $paper.month }}, {{ . }} {{ $paper.year }}
+        {{- else }}{{ with $paper.year }}, {{ . }}{{ end }}{{ end -}}
+        {{- with $paper.note }} {{ . | markdownify }}{{ end -}}
+        .
+    </span>
+    {{- if $badges }}{{ partial "papers/badges.html" $paper }}{{ end -}}
+</span>

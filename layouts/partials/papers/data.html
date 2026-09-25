@@ -1,0 +1,47 @@
+{{- /*
+  Fetches the papers API and returns the entries as a map keyed by their id.
+
+  Always call this through `partialCached` so that the JSON is unmarshalled only
+  once per build:
+
+      {{ $papers := partialCached "papers/data.html" . }}
+
+  The HTTP request itself is cached by Hugo in the `getresource` file cache,
+  hence the API is accessed once per build at most, and the response is reused
+  by the succeeding builds until the cache entry expires (never, by default).
+  Run hugo with `--ignoreCache` to fetch it again.
+
+  @param  {page} context
+  @return {maps.Params} the papers, keyed by their id.
+*/ -}}
+
+{{- $url := .Site.Params.api.papers | default "https://tamadalab.github.io/api/papers" -}}
+{{- $papers := dict -}}
+
+{{- with try (resources.GetRemote $url) -}}
+    {{- with .Err -}}
+        {{- warnf "papers: unable to get remote resource %q: %s" $url . -}}
+    {{- else with .Value -}}
+        {{- $data := . | transform.Unmarshal -}}
+        {{- if reflect.IsMap $data -}}
+            {{- /* the API already returns an object keyed by the id */ -}}
+            {{- $papers = $data -}}
+        {{- else if reflect.IsSlice $data -}}
+            {{- $scratch := newScratch -}}
+            {{- range $entry := $data -}}
+                {{- with $entry.id -}}
+                    {{- $scratch.SetInMap "papers" (printf "%v" .) $entry -}}
+                {{- else -}}
+                    {{- warnf "papers: an entry of %q has no id" $url -}}
+                {{- end -}}
+            {{- end -}}
+            {{- $papers = $scratch.Get "papers" | default dict -}}
+        {{- else -}}
+            {{- warnf "papers: unexpected content of %q" $url -}}
+        {{- end -}}
+    {{- else -}}
+        {{- warnf "papers: unable to get remote resource %q" $url -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $papers -}}

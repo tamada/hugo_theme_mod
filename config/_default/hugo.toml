@@ -1,5 +1,4 @@
 defaultContentLanguage = "en"
-gogoleAnalytics = "G-WQTS56KXPJ"
 
 [pagination]
 pagerSize = 6
@@ -15,4 +14,4 @@ term = ['html', 'json', 'markdown', 'rss']
 [module]
   [[module.imports]]
     disable = false
-    path = "github.com/nunocoracao/blowfish/v2"
+    path = "github.com/nunocoracao/blowfish/v3"

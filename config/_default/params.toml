@@ -3,6 +3,14 @@ enableCodeCopy = true
 enableStructuredBreadcrumbs = true
 summaryLength = 300
 
+[api]
+# the endpoint the `paper` shortcode reads. it is fetched once per build and
+# cached by Hugo in the `getresource` file cache (see README.md).
+papers = "https://tamadalab.github.io/api/papers"
+# the base URL of the momonga backend. set it to render the badges for
+# counting likes and downloads of the paper/poster PDFs.
+# momonga = "https://us-central1-momonga-8ec45.cloudfunctions.net/momonga"
+
 [pagination]
 pagerSize = 6
 

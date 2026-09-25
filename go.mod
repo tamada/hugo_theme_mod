@@ -1,5 +1,7 @@
 module github.com/tamada/hugo_theme_mod
 
-go 1.25.6
+go 1.26
 
-require github.com/nunocoracao/blowfish/v2 v2.97.0 // indirect
+require (
+	github.com/nunocoracao/blowfish/v3 v3.8.0
+)
